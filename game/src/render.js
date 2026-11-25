@@ -38,9 +38,8 @@ function heart(ctx, x, y, s, color) {
   ctx.fill();
 }
 
-/** One ingredient, drawn at (x, y) with width w (height ~ w * 0.42). */
-export function drawIngredient(ctx, id, x, y, w) {
-  const h = w * 0.42;
+/** One ingredient, drawn at (x, y) with width w and height h (default w * 0.42). */
+export function drawIngredient(ctx, id, x, y, w, h = w * 0.42) {
   ctx.save();
   ctx.translate(x, y);
   if (id === ING.BUN_BOT) {
@@ -166,10 +165,10 @@ export function createRenderer(canvas) {
     ctx.fillStyle = '#3d220c'; rr(ctx, 660, 24, 130, 16, 8); ctx.fill();
     ctx.fillStyle = frac > 0.5 ? '#6ab04c' : frac > 0.25 ? '#ffc53d' : '#e4572e';
     rr(ctx, 660, 24, 130 * frac, 16, 8); ctx.fill();
-    text(ctx, `SCORE ${state.score}`, 820, 41, 24, '#fff8e7');
-    if (state.combo >= 2) text(ctx, `COMBO x${state.combo}`, 1000, 41, 22, '#ff8c42');
-    for (let i = 0; i < 3; i += 1) heart(ctx, 1150 + i * 30, 32, 11, i < state.hearts ? '#ff5e7a' : '#4a2c14');
-    text(ctx, `LV ${state.level}`, 1240, 41, 18, '#ffc53d', 'bold', 'right');
+    text(ctx, `SCORE ${state.score}`, 815, 41, 24, '#fff8e7');
+    if (state.combo >= 2) text(ctx, `COMBO x${state.combo}`, 990, 41, 22, '#ff8c42');
+    for (let i = 0; i < 3; i += 1) heart(ctx, 1115 + i * 27, 32, 11, i < state.hearts ? '#ff5e7a' : '#4a2c14');
+    text(ctx, `LV ${state.level}`, 1268, 41, 18, '#ffc53d', 'bold', 'right');
   }
 
   function drawBoard(state, need) {
@@ -227,10 +226,12 @@ export function createRenderer(canvas) {
     if (state.plate.length === 0) {
       text(ctx, 'Empty plate — build the ticket order!', p.cx, p.cy - 44, 15, '#8a5a2b', 'normal', 'center');
     } else {
+      // Thin layers stacked upward, so the whole burger stays on the plate.
       state.plate.forEach((ing, i) => {
         const w = 250 - i * 3;
-        const y = p.cy - 16 - i * 24;
-        drawIngredient(ctx, ing, p.cx - w / 2, y - 10, w);
+        const lh = ing === ING.BUN_TOP ? 30 : 20;
+        const y = p.cy - 18 - (i + 1) * 20 - (ing === ING.BUN_TOP ? 8 : 0);
+        drawIngredient(ctx, ing, p.cx - w / 2, y, w, lh);
       });
     }
     // Serve / trash buttons.

@@ -25,7 +25,7 @@ export function stageShot(name, world) {
     s.selectedId = 1;
     s.plate = [ING.BUN_BOT, ING.PATTY, ING.CHEESE, ING.BUN_TOP];
     s.grill = [{ state: 'ready', t: 0 }, { state: 'cooking', t: 2.5 }];
-    s.popups = [{ x: 940, y: 390, text: '+180  $120 + $48 tip', color: '#2e7d32', ttl: 1.4 }];
+    s.popups = [{ x: 640, y: 300, text: '+180  $120 + $48 tip', color: '#2e7d32', ttl: 1.4 }];
     return { screen: SCREEN_PLAY, best: 1240 };
   }
   if (name === 'mid') {

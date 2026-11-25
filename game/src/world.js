@@ -89,7 +89,7 @@ export function createWorld(random) {
     if (!match) {
       state.shake = 5;
       state.hint = 'Plate does not match any ticket yet.';
-      popup(940, 400, 'No match!', '#e4572e');
+      popup(640, 300, 'No match!', '#e4572e');
       playSfx(state.muted, 'bad');
       return;
     }
@@ -99,8 +99,8 @@ export function createWorld(random) {
     const points = match.dish.price + tip + 10 * state.combo;
     state.score += points;
     state.served += 1;
-    popup(940, 390, `+${points}  $${match.dish.price} + $${tip} tip`, '#2e7d32');
-    if (state.combo >= 3) popup(940, 360, `COMBO x${state.combo}!`, '#ff8c42');
+    popup(640, 300, `+${points}  $${match.dish.price} + $${tip} tip`, '#2e7d32');
+    if (state.combo >= 3) popup(640, 272, `COMBO x${state.combo}!`, '#ff8c42');
     playSfx(state.muted, 'serve');
     state.tickets = state.tickets.filter((t) => t.id !== match.id);
     state.plate = [];
@@ -141,6 +141,11 @@ export function createWorld(random) {
       }
       if (action.kind === 'bin') {
         const { id, x, y } = action;
+        if (state.tickets.length === 0) {
+          popup(x, y - 10, 'No tickets yet — wait for the next order!', '#8a5a2b');
+          playSfx(state.muted, 'click');
+          return;
+        }
         if (id === ING.PATTY) {
           const slot = state.grill.findIndex((s) => s.state === 'empty');
           if (slot === -1) { popup(x, y - 10, 'Grill full!', '#e4572e'); playSfx(state.muted, 'bad'); return; }
@@ -170,6 +175,10 @@ export function createWorld(random) {
           return;
         }
         // Ready patty.
+        if (state.tickets.length === 0) {
+          popup(action.x, action.y, 'No ticket to build for!', '#8a5a2b');
+          return;
+        }
         const need = nextNeeded();
         if (need === ING.PATTY) {
           state.grill[action.slot] = { state: 'empty', t: 0 };
@@ -184,7 +193,7 @@ export function createWorld(random) {
         if (state.plate.length === 0) return;
         state.plate = [];
         state.hint = '';
-        popup(930, 470, 'Plate cleared', '#666666');
+        popup(640, 515, 'Plate cleared', '#666666');
         playSfx(state.muted, 'trash');
       }
     },
